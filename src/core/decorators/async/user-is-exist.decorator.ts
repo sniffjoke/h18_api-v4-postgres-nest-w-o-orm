@@ -5,14 +5,12 @@ import {
   ValidatorConstraintInterface
 } from "class-validator";
 import { Injectable } from "@nestjs/common";
-import { UsersRepository } from '../../../features/users/infrastructure/users.repository';
 
 
 @ValidatorConstraint({ name: "user-is-exist", async: true })
 @Injectable()
 export class UserIsExistConstraint implements ValidatorConstraintInterface {
   constructor(
-    // private readonly usersRepository: UsersRepository
   ) {
   }
 
