@@ -55,6 +55,7 @@ export class BlogsQueryRepository {
     }
 
     blogOutputMap(blog: BlogViewModel): BlogViewModel {
+        console.log(blog);
         const {id, name, description, websiteUrl, isMembership, createdAt} = blog
         return {
             id: id.toString(),
