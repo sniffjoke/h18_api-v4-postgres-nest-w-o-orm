@@ -30,8 +30,15 @@ export class BlogsController {
 
     @Get('blogs')
     async getAll(@Query() query: any) {
-        // const blogsWithQuery = await this.blogsQueryRepository.getAllBlogsWithQuery(query)
-        // return blogsWithQuery
+        const blogsWithQuery = await this.blogsQueryRepository.getAllBlogsWithQuery(query)
+        return blogsWithQuery
+    }
+
+    @Get('sa/blogs')
+    @UseGuards(BasicAuthGuard)
+    async getAllBlogs(@Query() query: any) {
+        const blogsWithQuery = await this.blogsQueryRepository.getAllBlogsWithQuery(query)
+        return blogsWithQuery
     }
 
     @Post('sa/blogs')
@@ -74,8 +81,8 @@ export class BlogsController {
         // return postWithDetails;
     }
 
-    @Get(':id/posts')
-    async getAllPostsByBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
+    @Get('blogs/:id/posts/:postId/')
+    async getAllPostsByBlogId(@Param() params: string, @Query() query: any, @Req() req: Request) {
         // const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id)
         // const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string)
         // return {
