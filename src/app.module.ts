@@ -10,6 +10,7 @@ import { DevicesModule } from './features/devices/devices.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthModule } from './features/auth/auth.module';
 import { UserIsExistConstraint } from './core/decorators/async/user-is-exist.decorator';
+import { BlogsModule } from './features/blogs/blogs.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UserIsExistConstraint } from './core/decorators/async/user-is-exist.dec
         },
       },
     }),
+    BlogsModule,
     UsersModule,
     TestingModule,
     AuthModule,
