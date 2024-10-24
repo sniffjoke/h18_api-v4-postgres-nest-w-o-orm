@@ -127,11 +127,12 @@ export class PostsQueryRepository {
       content,
       blogId,
       blogName,
-      // extendedLikesInfo: {
-      //         likesCount: extendedLikesInfo.likesCount,
-      //         dislikesCount: extendedLikesInfo.dislikesCount,
-      //         newestLikes: extendedLikesInfo.newestLikes
-      //     },
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        newestLikes: [],
+        myStatus: 'None',
+      },
       createdAt,
     };
   }

@@ -82,6 +82,17 @@ export class BlogsController {
         return posts
     }
 
+    @Get('sa/blogs/:id/posts')
+    async getAllPostsWithBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
+        const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id)
+        // const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string)
+        // return {
+        //     ...posts,
+        //     items: newData
+        // };
+        return posts
+    }
+
     @Post('sa/blogs/:id/posts')
     @UseGuards(BasicAuthGuard)
     async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') blogId: string, @Req() req: Request) {
@@ -95,6 +106,7 @@ export class BlogsController {
     @UseGuards(BasicAuthGuard)
     async updatePost(@Body() dto: PostCreateModelWithParams, @Param() idParams: any) {
         const updatePost = await this.blogsService.updatePostFromBlogsUri(idParams.postId, idParams.blogId, dto);
+        console.log(updatePost);
         return updatePost
     }
 
