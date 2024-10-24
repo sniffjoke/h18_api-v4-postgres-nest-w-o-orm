@@ -13,7 +13,7 @@ import {
 import {BlogsService} from "../application/blogs.service";
 import {BlogsQueryRepository} from "../infrastructure/blogs.query-repository";
 import {BlogCreateModel} from "./models/input/create-blog.input.model";
-import { PostCreateModelWithParams } from '../../posts/api/models/input/create-post.input.model';
+import { PostCreateModel, PostCreateModelWithParams } from '../../posts/api/models/input/create-post.input.model';
 import {PostsService} from "../../posts/application/posts.service";
 import {PostsQueryRepository} from "../../posts/infrastructure/posts.query-repository";
 import { BasicAuthGuard } from '../../../core/guards/basic-auth.guard';
@@ -71,25 +71,39 @@ export class BlogsController {
         return deleteBlog
     }
 
-    @Post(':id/posts')
-    @UseGuards(BasicAuthGuard)
-    async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') id: string, @Req() req: Request) {
-        // const createPostId = await this.postsService.createPostWithParams(dto, id)
-        // const newPost = await this.postsQueryRepository.postOutput(createPostId)
-        // return newPost
-        // const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string)
-        // return postWithDetails;
-    }
-
-    @Get('blogs/:id/posts/:postId/')
-    async getAllPostsByBlogId(@Param() params: string, @Query() query: any, @Req() req: Request) {
-        // const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id)
+    @Get('blogs/:id/posts')
+    async getAllPostsByBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
+        const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id)
         // const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string)
         // return {
         //     ...posts,
         //     items: newData
         // };
-        // return posts
+        return posts
+    }
+
+    @Post('sa/blogs/:id/posts')
+    @UseGuards(BasicAuthGuard)
+    async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') blogId: string, @Req() req: Request) {
+        const postId = await this.postsService.createPost({...dto, blogId});
+        const newPost = await this.postsQueryRepository.postOutput(postId);
+        return newPost
+    }
+
+    @Put('sa/blogs/:blogId/posts/:postId')
+    @HttpCode(204)
+    @UseGuards(BasicAuthGuard)
+    async updatePost(@Body() dto: PostCreateModelWithParams, @Param() idParams: any) {
+        const updatePost = await this.blogsService.updatePostFromBlogsUri(idParams.postId, idParams.blogId, dto);
+        return updatePost
+    }
+
+    @Delete('sa/blogs/:blogId/posts/:postId')
+    @HttpCode(204)
+    @UseGuards(BasicAuthGuard)
+    async deletePost(@Param() idParams: any) {
+        const deletePost = await this.blogsService.deletePostFromBlogsUri(idParams.postId, idParams.blogId);
+        return deletePost
     }
 
 }

@@ -1,19 +1,20 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {BlogsRepository} from "../infrastructure/blogs.repository";
 import {BlogCreateModel} from "../api/models/input/create-blog.input.model";
+import { PostCreateModel, PostCreateModelWithParams } from '../../posts/api/models/input/create-post.input.model';
+import { PostsRepository } from '../../posts/infrastructure/posts.repository';
 
 @Injectable()
 export class BlogsService {
     constructor(
-        private readonly blogsRepository: BlogsRepository
+        private readonly blogsRepository: BlogsRepository,
+        private readonly postsRepository: PostsRepository
     ) {
     }
 
     async createBlog(blog: BlogCreateModel) {
-        // const newBlog = new this.blogModel(blog)
         const newBlogId = await this.blogsRepository.create(blog)
         return newBlogId
-        // return saveData._id.toString()
     }
 
     async updateBlog(id: string, dto: BlogCreateModel) {
@@ -26,6 +27,18 @@ export class BlogsService {
         const findedBlog = await this.blogsRepository.findBlogById(id)
         const deleteBlog = await this.blogsRepository.deleteBlog(id)
         return deleteBlog
+    }
+
+    async updatePostFromBlogsUri(postId: string, blogId: string, dto: PostCreateModelWithParams) {
+        const findedBlog = await this.blogsRepository.findBlogById(blogId)
+        const updatePost = await this.postsRepository.updatePostFromBlogsUri(postId, blogId, dto)
+        return updatePost
+    }
+
+    async deletePostFromBlogsUri(postId: string, blogId: string) {
+        const findedBlog = await this.blogsRepository.findBlogById(blogId)
+        const updatePost = await this.postsRepository.deletePostFromBlogsUri(postId, blogId)
+        return updatePost
     }
 
 }

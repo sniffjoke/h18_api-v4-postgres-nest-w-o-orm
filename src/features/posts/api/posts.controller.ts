@@ -9,7 +9,7 @@ import { BasicAuthGuard } from '../../../core/guards/basic-auth.guard';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../../core/guards/jwt-auth.guard';
 
-@Controller('posts')
+@Controller()
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
@@ -20,34 +20,30 @@ export class PostsController {
 
   }
 
-  @Get()
+  @Get('posts')
   async getAllPosts(@Query() query: any, @Req() req: Request) {
-    // const posts = await this.postsQueryRepository.getAllPostsWithQuery(query);
-    // const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string)
-    // return {
-      // ...posts,
-      // items: newData
-    // };
+    const posts = await this.postsQueryRepository.getAllPostsWithQuery(query);
+    return posts
   }
 
-  @Post()
+  @Post('sa/posts')
   @UseGuards(BasicAuthGuard)
   async createPost(@Body() dto: PostCreateModel, @Req() req: Request) {
-    // const postId = await this.postsService.createPost(dto);
-    // const newPost = await this.postsQueryRepository.postOutput(postId);
+    const postId = await this.postsService.createPost(dto);
+    const newPost = await this.postsQueryRepository.postOutput(postId);
     // const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string)
     // return postWithDetails;
-    // return newPost;
+    return newPost;
   }
 
-  @Get(':id')
+  @Get('posts/:id')
   async getPostById(@Param('id') id: string, @Req() req: Request) {
     // const post = await this.postsQueryRepository.postOutput(id);
     // const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(post, req.headers.authorization as string)
     // return postWithDetails;
   }
 
-  @Put(':id')
+  @Put('sa/posts/:id')
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
   async updatePostById(@Param('id') id: string, @Body() dto: PostCreateModel) {
@@ -55,7 +51,7 @@ export class PostsController {
     return updatePost;
   }
 
-  @Delete(':id')
+  @Delete('sa/posts/:id')
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
   async deletePost(@Param('id') id: string) {

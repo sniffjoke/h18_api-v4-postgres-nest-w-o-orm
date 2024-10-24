@@ -14,6 +14,7 @@ export class TestingService {
       await this.dataSource.query('TRUNCATE TABLE users')
       await this.dataSource.query('TRUNCATE TABLE devices')
       await this.dataSource.query('TRUNCATE TABLE tokens')
+      await this.dataSource.query('TRUNCATE TABLE posts')
       await this.dataSource.query('TRUNCATE TABLE blogs')
   }
 

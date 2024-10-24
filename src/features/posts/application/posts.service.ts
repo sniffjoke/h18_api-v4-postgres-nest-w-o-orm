@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {PostsRepository} from "../infrastructure/posts.repository";
 import { PostCreateModel, PostCreateModelWithParams } from '../api/models/input/create-post.input.model';
 import {BlogsService} from "../../blogs/application/blogs.service";
 import { TokensService } from '../../tokens/application/tokens.service';
-import { LikeStatus, PostViewModel } from '../api/models/output/post.view.model';
+import { PostViewModel } from '../api/models/output/post.view.model';
 import { UsersService } from '../../users/application/users.service';
+import { BlogsRepository } from '../../blogs/infrastructure/blogs.repository';
 
 @Injectable()
 export class PostsService {
@@ -13,21 +14,14 @@ export class PostsService {
         private readonly blogsService: BlogsService,
         private readonly tokensService: TokensService,
         private readonly usersService: UsersService,
+        private readonly blogsRepository: BlogsRepository,
     ) {
     }
 
     async createPost(post: PostCreateModel) {
-        // const findedBlog = await this.blogsService.findBlogById(post.blogId)
-        // const newPost = new this.postModel({...post, blogName: findedBlog?.name})
-        // const saveData = await this.postsRepository.savePost(newPost)
-        // return saveData._id.toString()
-    }
-
-    async createPostWithParams(post: PostCreateModelWithParams, blogId: string) {
-        // const findedBlog = await this.blogsService.findBlogById(blogId)
-        // const newPost = new this.postModel({...post, blogName: findedBlog.name, blogId: findedBlog?.id})
-        // const saveData = await this.postsRepository.savePost(newPost)
-        // return saveData._id.toString()
+        const findedBlog = await this.blogsRepository.findBlogById(post.blogId)
+        const newPostId = await this.postsRepository.createPost(post, findedBlog.name)
+        return newPostId
     }
 
     async updatePost(id: string, dto: PostCreateModel) {
@@ -97,16 +91,16 @@ export class PostsService {
     }
 
     statusAndNewLikesPayload(post: PostViewModel, status?: string, newestLikes?: any) {
-        const newStatus = status ? status : LikeStatus.None
-        const newLikes = newestLikes ? newestLikes : []
-        return {
-            ...post,
-            extendedLikesInfo: {
-                ...post.extendedLikesInfo,
-                myStatus: newStatus,
-                newestLikes: newLikes
-            }
-        }
+        // const newStatus = status ? status : LikeStatus.None
+        // const newLikes = newestLikes ? newestLikes : []
+        // return {
+        //     ...post,
+        //     extendedLikesInfo: {
+        //         ...post.extendedLikesInfo,
+        //         myStatus: newStatus,
+        //         newestLikes: newLikes
+        //     }
+        // }
     }
 
 }

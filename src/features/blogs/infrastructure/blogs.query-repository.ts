@@ -16,7 +16,8 @@ export class BlogsQueryRepository {
     const generateQuery = await this.generateQuery(query);
     const items = await this.dataSource.query(
       `
-                SELECT * FROM blogs 
+                SELECT * 
+                FROM blogs 
                 WHERE "name" ILIKE $1
                 ORDER BY "${generateQuery.sortBy}" ${generateQuery.sortDirection}
                 OFFSET $2
@@ -60,19 +61,19 @@ export class BlogsQueryRepository {
   }
 
   async blogOutput(id: string) {
-    const blog = await this.dataSource.query(
+    const findedBlog = await this.dataSource.query(
       `
             SELECT * FROM blogs 
             WHERE id=${id}
           `,
     );
-    if (!blog.length) {
+    if (!findedBlog.length) {
       throw new NotFoundException(`Blog with id ${id} not found`);
     }
-    return this.blogOutputMap(blog[0]);
+    return this.blogOutputMap(findedBlog[0]);
   }
 
-  blogOutputMap(blog: BlogViewModel): BlogViewModel {
+  blogOutputMap(blog: BlogViewModel) {
     const { id, name, description, websiteUrl, isMembership, createdAt } = blog;
     return {
       id: id.toString(),
